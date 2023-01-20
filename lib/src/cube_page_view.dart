@@ -28,15 +28,18 @@ class CubePageView extends StatefulWidget {
   /// The number of items you have, this is only required if you use [CubePageView.builder]
   final int? itemCount;
 
+  /// The index of the first playing child : Default {startIndex = 0}
+   int? startIndex =0;
   /// Widgets you want to use inside the [CubePageView], this is only required if you use [CubePageView] constructor
   final List<Widget>? children;
 
   /// Creates a scrollable list that works page by page from an explicit [List]
   /// of widgets.
-  const CubePageView({
+   CubePageView({
     Key? key,
     this.onPageChanged,
     this.controller,
+    this.startIndex,
     required List<Widget> this.children,
   })  : itemBuilder = null,
         itemCount = null,
@@ -79,7 +82,7 @@ class _CubePageViewState extends State<CubePageView> {
 
   @override
   void initState() {
-    _pageController = widget.controller ?? PageController();
+    _pageController = widget.controller ?? PageController(initialPage: widget.startIndex!);
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       _pageController!.addListener(_listener);
     });
