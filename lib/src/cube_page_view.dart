@@ -63,8 +63,8 @@ class CubePageView extends StatefulWidget {
     required this.itemBuilder,
     this.onPageChanged,
     this.startIndex,
-    this.controller,
   })  : this.children = null,
+        controller=PageController(initialPage:startIndex! ),
         assert(itemCount != null),
         assert(itemBuilder != null),
         super(key: key);
