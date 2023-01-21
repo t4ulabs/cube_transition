@@ -74,16 +74,17 @@ class CubePageView extends StatefulWidget {
 }
 
 class _CubePageViewState extends State<CubePageView> {
-  final _pageNotifier = ValueNotifier(1.0);
+  ValueNotifier<double>? _pageNotifier ;
   PageController? _pageController ;
 
   void _listener() {
-    _pageNotifier.value = _pageController!.page ?? 0;
+    _pageNotifier!.value = _pageController!.page ?? 0;
 
   }
 
   @override
   void initState() {
+    _pageNotifier = ValueNotifier(widget.startIndex!.toDouble());
     _pageController = widget.controller ?? PageController(initialPage: widget.startIndex!);
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       _pageController!.addListener(_listener);
@@ -95,7 +96,7 @@ class _CubePageViewState extends State<CubePageView> {
   void dispose() {
     _pageController!.removeListener(_listener);
     _pageController!.dispose();
-    _pageNotifier.dispose();
+    _pageNotifier!.dispose();
     super.dispose();
   }
 
@@ -105,7 +106,7 @@ class _CubePageViewState extends State<CubePageView> {
       color: Colors.transparent,
       child: Center(
         child: ValueListenableBuilder<double?>(
-          valueListenable: _pageNotifier,
+          valueListenable: _pageNotifier!,
           builder: (_, value, child) => PageView.builder(
             controller: _pageController,
             onPageChanged: widget.onPageChanged,
