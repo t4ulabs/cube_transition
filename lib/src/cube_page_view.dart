@@ -75,10 +75,11 @@ class CubePageView extends StatefulWidget {
 
 class _CubePageViewState extends State<CubePageView> {
   final _pageNotifier = ValueNotifier(0.0);
-  PageController? _pageController;
+  PageController? _pageController ;
 
   void _listener() {
     _pageNotifier.value = _pageController!.page ?? 0;
+
   }
 
   @override
@@ -161,16 +162,7 @@ class CubeWidget extends StatelessWidget {
       child: Stack(
         children: [
           child,
-          Positioned.fill(
-            child: Opacity(
-              opacity: opacity as double,
-              child: Container(
-                child: Container(
-                  color: Colors.black87,
-                ),
-              ),
-            ),
-          ),
+
         ],
       ),
     );
