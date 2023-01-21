@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
@@ -63,8 +64,8 @@ class CubePageView extends StatefulWidget {
     required this.itemBuilder,
     this.onPageChanged,
     this.startIndex,
+    this.controller,
   })  : this.children = null,
-        controller=PageController(initialPage:startIndex! ),
         assert(itemCount != null),
         assert(itemBuilder != null),
         super(key: key);
@@ -74,11 +75,12 @@ class CubePageView extends StatefulWidget {
 }
 
 class _CubePageViewState extends State<CubePageView> {
-  final _pageNotifier = ValueNotifier(0.0);
   PageController? _pageController ;
-
+  ValueNotifier<double>? _pageNotifier;
   void _listener() {
-    _pageNotifier.value = _pageController!.page ?? 0;
+     _pageNotifier = ValueNotifier(widget.startIndex!.toDouble());
+
+    _pageNotifier!.value = _pageController!.page ?? 0;
 
   }
 
@@ -95,7 +97,7 @@ class _CubePageViewState extends State<CubePageView> {
   void dispose() {
     _pageController!.removeListener(_listener);
     _pageController!.dispose();
-    _pageNotifier.dispose();
+    _pageNotifier!.dispose();
     super.dispose();
   }
 
@@ -105,7 +107,7 @@ class _CubePageViewState extends State<CubePageView> {
       color: Colors.transparent,
       child: Center(
         child: ValueListenableBuilder<double?>(
-          valueListenable: _pageNotifier,
+          valueListenable: _pageNotifier!,
           builder: (_, value, child) => PageView.builder(
             controller: _pageController,
             onPageChanged: widget.onPageChanged,
