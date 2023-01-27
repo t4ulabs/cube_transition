@@ -28,17 +28,20 @@ class CubePageView extends StatefulWidget {
   /// The number of items you have, this is only required if you use [CubePageView.builder]
   final int? itemCount;
 
+  /// The index of the first playing child : Default {startIndex = 0}
+   int? startIndex =0;
   /// Widgets you want to use inside the [CubePageView], this is only required if you use [CubePageView] constructor
   final List<Widget>? children;
 
   /// Creates a scrollable list that works page by page from an explicit [List]
   /// of widgets.
-  const CubePageView({
+   CubePageView({
     Key? key,
     this.onPageChanged,
-    this.controller,
+    this.startIndex,
     required List<Widget> this.children,
   })  : itemBuilder = null,
+         controller=PageController(initialPage:startIndex! ),
         itemCount = null,
         assert(children != null),
         super(key: key);
@@ -59,6 +62,7 @@ class CubePageView extends StatefulWidget {
     required int this.itemCount,
     required this.itemBuilder,
     this.onPageChanged,
+    this.startIndex,
     this.controller,
   })  : this.children = null,
         assert(itemCount != null),
@@ -70,16 +74,18 @@ class CubePageView extends StatefulWidget {
 }
 
 class _CubePageViewState extends State<CubePageView> {
-  final _pageNotifier = ValueNotifier(0.0);
-  PageController? _pageController;
+  ValueNotifier<double>? _pageNotifier ;
+  PageController? _pageController ;
 
   void _listener() {
-    _pageNotifier.value = _pageController!.page ?? 0;
+    _pageNotifier!.value = _pageController!.page ?? 0;
+
   }
 
   @override
   void initState() {
-    _pageController = widget.controller ?? PageController();
+    _pageNotifier = ValueNotifier(widget.startIndex!.toDouble());
+    _pageController = widget.controller ?? PageController(initialPage: widget.startIndex!);
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       _pageController!.addListener(_listener);
     });
@@ -90,7 +96,7 @@ class _CubePageViewState extends State<CubePageView> {
   void dispose() {
     _pageController!.removeListener(_listener);
     _pageController!.dispose();
-    _pageNotifier.dispose();
+    _pageNotifier!.dispose();
     super.dispose();
   }
 
@@ -100,7 +106,7 @@ class _CubePageViewState extends State<CubePageView> {
       color: Colors.transparent,
       child: Center(
         child: ValueListenableBuilder<double?>(
-          valueListenable: _pageNotifier,
+          valueListenable: _pageNotifier!,
           builder: (_, value, child) => PageView.builder(
             controller: _pageController,
             onPageChanged: widget.onPageChanged,
@@ -157,16 +163,7 @@ class CubeWidget extends StatelessWidget {
       child: Stack(
         children: [
           child,
-          Positioned.fill(
-            child: Opacity(
-              opacity: opacity as double,
-              child: Container(
-                child: Container(
-                  color: Colors.black87,
-                ),
-              ),
-            ),
-          ),
+
         ],
       ),
     );
